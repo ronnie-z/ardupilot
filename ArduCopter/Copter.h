@@ -67,6 +67,7 @@
 #include <AP_TempCalibration/AP_TempCalibration.h>
 #include <AC_AutoTune/AC_AutoTune.h>
 #include <AP_Common/AP_FWVersion.h>
+#include <AP_OpenMV/AP_OpenMV.h>
 
 // Configuration
 #include "defines.h"
@@ -266,6 +267,8 @@ private:
     RC_Channel *channel_yaw;
 
     AP_Logger logger;
+
+    AP_OpenMV openmv;
 
     // flight modes convenience array
     AP_Int8 *flight_modes;
@@ -671,6 +674,7 @@ private:
     void update_super_simple_bearing(bool force_update);
     void read_AHRS(void);
     void update_altitude();
+    void update_OpenMV(void);
 
     // Attitude.cpp
     float get_pilot_desired_yaw_rate(int16_t stick_angle);
@@ -784,6 +788,7 @@ private:
     void Log_Write_Attitude();
     void Log_Write_EKF_POS();
     void Log_Write_MotBatt();
+    void Log_Write_OpenMV();
     void Log_Write_Event(Log_Event id);
     void Log_Write_Data(uint8_t id, int32_t value);
     void Log_Write_Data(uint8_t id, uint32_t value);
