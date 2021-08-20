@@ -117,6 +117,27 @@ void Copter::Log_Write_MotBatt()
 #endif
 }
 
+struct PACKED log_OpenMV {
+    LOG_PACKET_HEADER;
+    uint64_t time_us;
+    uint8_t   cx;
+    uint8_t   cy;
+};
+
+// write an OpenMV packet
+void Copter::Log_Write_OpenMV()
+{
+    struct log_OpenMV pkt_mv = {
+        LOG_PACKET_HEADER_INIT(LOG_OpenMV_MSG),
+        time_us         : AP_HAL::micros64(),
+        cx        : openmv.cx,
+        cy        : openmv.cy,
+        
+    };
+    logger.WriteBlock(&pkt_mv, sizeof(pkt_mv));
+
+}
+
 // Wrote an event packet
 void Copter::Log_Write_Event(Log_Event id)
 {
@@ -475,6 +496,8 @@ const struct LogStructure Copter::log_structure[] = {
       "DU32",  "QBI",         "TimeUS,Id,Value", "s--", "F--" },
     { LOG_DATA_FLOAT_MSG, sizeof(log_Data_Float),         
       "DFLT",  "QBf",         "TimeUS,Id,Value", "s--", "F--" },
+    { LOG_OpenMV_MSG, sizeof(log_OpenMV),         
+      "OMV",  "QBB",         "TimeUS,cx,cy", "s--", "F--" },
 #if FRAME_CONFIG == HELI_FRAME
     { LOG_HELI_MSG, sizeof(log_Heli),
       "HELI",  "Qffff",        "TimeUS,DRRPM,ERRPM,Gov,Throt", "s----", "F----" },
