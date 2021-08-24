@@ -913,6 +913,10 @@ private:
     void userhook_auxSwitch2(uint8_t ch_flag);
     void userhook_auxSwitch3(uint8_t ch_flag);
 
+    Vector3f user_wp[10];     //存储航点
+    int8_t  current_wp_num;  //当前航点编号
+    void Save_WP_Guided();
+    
 #if OSD_ENABLED == ENABLED
     void publish_osd_info();
 #endif

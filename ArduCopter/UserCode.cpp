@@ -59,3 +59,16 @@ void Copter::userhook_auxSwitch3(uint8_t ch_flag)
     // put your aux switch #3 handler here (CHx_OPT = 49)
 }
 #endif
+
+
+void Copter::Save_WP_Guided(){
+
+    if (copter.current_wp_num <= 10){
+        user_wp[current_wp_num ++] = inertial_nav.get_position();
+        gcs().send_text(MAV_SEVERITY_ALERT, "save current waypoint succeed ！"); 
+    }
+    else{
+        gcs().send_text(MAV_SEVERITY_ALERT, "user_wp is filled , waypoint save failed ！");     
+    }
+    
+}

@@ -76,7 +76,12 @@ bool ModeGuided::do_user_takeoff_start(float final_alt_above_home)
 
 // initialise guided mode's position controller
 void ModeGuided::pos_control_start()
-{
+{   
+    
+
+
+
+
     // set to position control mode
     guided_mode = Guided_WP;
 
@@ -84,11 +89,11 @@ void ModeGuided::pos_control_start()
     wp_nav->wp_and_spline_init();
 
     // initialise wpnav to stopping point
-    Vector3f stopping_point;
-    wp_nav->get_wp_stopping_point(stopping_point);
+    // Vector3f stopping_point;
+    // wp_nav->get_wp_stopping_point(stopping_point);
 
     // no need to check return status because terrain data is not used
-    wp_nav->set_wp_destination(stopping_point, false);
+    wp_nav->set_wp_destination(copter.user_wp[copter.current_wp_num - 1], false);
 
     // initialise yaw
     auto_yaw.set_mode_to_default(false);
@@ -418,7 +423,14 @@ void Mode::auto_takeoff_run()
 // guided_pos_control_run - runs the guided position controller
 // called from guided_run
 void ModeGuided::pos_control_run()
-{
+{   
+
+    if (copter.current_wp_num >= 0){
+        if (wp_nav->reached_wp_destination()){   
+            gcs().send_text(MAV_SEVERITY_CRITICAL, "copter has arrived at %d waypoint", copter.current_wp_num);
+            wp_nav->set_wp_destination(copter.user_wp[--copter.current_wp_num]);
+        }
+    }
     // process pilot's yaw input
     float target_yaw_rate = 0;
     if (!copter.failsafe.radio) {
